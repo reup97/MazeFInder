@@ -24,12 +24,14 @@
 #define JOY_CENTRE 512
 #define JOY_SPEED 5
 #define MILLIS_PER_FRAME 50 
+
+#define PUSHBUTTON 12
 // Color definitions
 #define BLACK 0x0000
 #define WHITE 0xFFFF
 #define BLUE 0x001F
-// #define RED 0xF800
-// #define GREEN 0x07E0
+#define RED 0xF800
+#define GREEN 0x07E0
 // #define CYAN 0x07FF
 // #define MAGENTA 0xF81F 
 // #define YELLOW 0xFFE0 
@@ -43,15 +45,18 @@ struct Point
 
 
 enum State {Up = 0, Down, Left, Right, Hover, Click, Done};
+enum Block {Road = ' ', Wall = '#', Entrance = '*', Exportation = '+'};
 
 
 void setupGame();
 void askInfo();
-void drawMaze();
+void drawMaze(Block block);
 State scanJoystick();
 void updateCursor(Point& cursor, int horiz, int vert);
-void draw(const Point &cursor);
-void mapping(const Point &cursor);
+void drawmap(const Point &cursor, Block block);
+void mapping(const Point &cursor, char ch);
+bool atBoundaries(const Point &cursor);
+bool isOccupied(const Point &cursor);
 void finder();
 
 void test_showMaze();
