@@ -7,23 +7,14 @@
 
 #include "mazefinder.h"
 
-namespace info
-{
-    const int col = 8;
-    const int row = 10;
-    const int wallWidth = 16;
-    Point entrance = { -1,  -1};
-    Point exportation = {-1, -1}; 
-    const int wallColor = WHITE;
-    const int roadColor = BLACK;
-    const int cursorColor = BLUE;
-    const int entranceColor = RED;
-    const int exitColor = GREEN;
-}
+
+Point info::entrance = { -1,  -1};
+Point info::exportation = {-1, -1}; 
+
 
 const int PUSHBUTTON_DELAY = 200;
 // initialize maze
-char maze[info::row][info::col];
+extern char maze[info::row][info::col];
 
 Adafruit_ST7735 tft = Adafruit_ST7735(TFT_CS, TFT_DC, TFT_RST);
 
@@ -76,7 +67,10 @@ int main()
     Serial.println(F("You can draw the wall now."));
 	drawMaze(Wall);
     Serial.println(F("Ready to find the way out!"));
+    delay(2000);    // delay fir 2 seconds
     finder();
+
+    Serial.end();
     return 0;
 }
 
@@ -257,13 +251,65 @@ bool atBoundaries(const Point &cursor)
 
 bool isOccupied(const Point &cursor)
 {
-    return maze[cursor.y][cursor.x] != ' ';
+    return maze[cursor.y][cursor.x] != Road;
 }
 
 void finder()
 {
 
+    StackArray<Cell> stack;
+    // TODO: new start is (0,0)
+    stack.push(Cell(0, 0));
+
+    while ( true )
+    {
+        Cell currentCell = stack.peek();
+        // if exit is found
+        if ( currentCell.getRow() == info::exportation.x && currentCell.getCol() == info::exportation.y )
+        {
+            Serial.println(F("I find the way out!"));
+            return;
+        }
+        else if ( currentCell.getDirection() <= 4 ) // not finish seeking in current cell
+        {
+            // test
+            Serial.println("im here: -- ");
+            Serial.println(currentCell.getValue());
+            Serial.print("direction:");
+            Serial.println(currentCell.getDirection());
+            // test end
+            Cell nextCell = currentCell.getNextCell();
+            // test
+            Serial.println(nextCell.getValue());
+            Serial.print("direction:");
+            Serial.println(currentCell.getDirection());
+            // test end
+            if ( nextCell.getValue() == ' ') // && nextCell.getRow() != currentCell.getRow() && nextCell.getCol() != currentCell.getCol() ) // TODO: (nextCell.row, nextCell.col) not in [(c.row, c.col) for c in stack]
+            {
+                stack.push(nextCell);
+                // TODO: add animation
+                // test
+                Serial.print("* now is [ ");
+                Serial.print(nextCell.getRow() );
+                Serial.print(", ");
+                Serial.print(nextCell.getCol() );
+                Serial.println("];");
+                // test end;
+            }
+        }
+        else
+        {
+            stack.pop();
+        }
+    }
 }
+
+
+
+
+///////////////////////////////
+//////////TEST FUNCTIONS///////
+///////////////////////////////
 
 void test_showMaze()
 {

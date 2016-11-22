@@ -7,7 +7,8 @@
 #include <SPI.h>
 #include <SD.h>
 #include "lcd_image.h"
-#include <StackArray.h>
+#include "StackArray.h"
+#include "Cell.h"
 
 #define SD_CS 5
 #define TFT_CS 6
@@ -42,7 +43,19 @@ struct Point
     int y;
 };
 
-
+namespace info
+{
+    const int col = 8;
+    const int row = 10;
+    const int wallWidth = 16;
+    const int wallColor = WHITE;
+    const int roadColor = BLACK;
+    const int cursorColor = BLUE;
+    const int entranceColor = RED;
+    const int exitColor = GREEN;
+    extern Point entrance;
+    extern Point exportation; 
+}
 
 enum State {Up = 0, Down, Left, Right, Hover, Click, Done};
 enum Block {Road = ' ', Wall = '#', Entrance = '*', Exportation = '+'};
