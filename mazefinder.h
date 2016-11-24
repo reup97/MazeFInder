@@ -37,6 +37,13 @@
 // #define MAGENTA 0xF81F 
 // #define YELLOW 0xFFE0 
 
+
+#define RATING_LED_0 2      // rating leds 0-4
+#define RATING_LED_1 3
+#define RATING_LED_2 4
+#define RATING_LED_3 10
+#define RATING_LED_4 11
+
 struct Point 
 {
     int x;
@@ -71,8 +78,12 @@ void mapping(const Point &cursor, char ch);
 bool atBoundaries(const Point &cursor);
 bool isOccupied(const Point &cursor);
 void finder();
+void blinkFiveLeds();
 
 
+// addition features
+void startGame();
+// test function
 void test_showMaze();
 
 

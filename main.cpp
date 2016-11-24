@@ -39,7 +39,14 @@ void setup()
     digitalWrite(JOY_SEL, HIGH); // enable pull-up resistor
     Serial.println(F("OK!"));  
 
-
+    // initialize LEDs
+    Serial.print(F("Initializing LED arrays..."));
+    pinMode(RATING_LED_0, OUTPUT);
+    pinMode(RATING_LED_1, OUTPUT);
+    pinMode(RATING_LED_2, OUTPUT);
+    pinMode(RATING_LED_3, OUTPUT);
+    pinMode(RATING_LED_4, OUTPUT);
+    Serial.println(F("OK!")); 
 
     // initialize maze 
     for (int i = 0; i < info::row; ++i)
@@ -52,6 +59,9 @@ void setup()
 int main()
 {
     setup();
+    // beginning animation
+    startGame();
+
     while (-1 ==info::entrance.x)
     {
         Serial.println(F("Please select an entrance with joystick."));
@@ -78,7 +88,8 @@ int main()
 void drawMaze(Block block)
 {
     // allows user to draw the maze on the TFT screen and map the corresponding blocks to maze array
-    Point cursor = { 0, 0 };
+    
+    static Point cursor = { 0, 0 };
     updateCursor(cursor, 0, 0);
     for (;;)
     {
@@ -120,6 +131,7 @@ void drawMaze(Block block)
     }
 
 }
+
 
 State scanJoystick()
 {
@@ -193,7 +205,7 @@ void drawmap(const Point &cursor, Block block)
         {
             Serial.println(F("You cannot set wall here."));
             return;
-        }        
+        }
         tft.fillRect(cursor.x * info::wallWidth, cursor.y * info::wallWidth,
                             info::wallWidth, info::wallWidth, info::wallColor);
         mapping(cursor, Wall);
@@ -203,6 +215,7 @@ void drawmap(const Point &cursor, Block block)
         if ( !atBoundaries(cursor) || isOccupied(cursor))
         {
             Serial.println(F("You cannot set entrance here."));
+
             return;
         }
         tft.fillRect(cursor.x * info::wallWidth, cursor.y * info::wallWidth,
@@ -259,18 +272,22 @@ void finder()
 	// NOTE: now it will crash when it uses up memory
     Point myFinder = {info::entrance.x, info::entrance.y};
     StackArray<Cell> stack;
-    stack.push(Cell(-1, -1));   // dummy
+    stack.push(Cell(-1, -1));   // dummy b
     stack.push(Cell(info::entrance.y, info::entrance.x));
 
+    Cell nextCell(-1, -1);
+    int deltaX = 0;
+    int deltaY = 0;
     while ( true )
     {
         Cell& currentCell = stack.peek();
         Cell& prevCell = stack.peekPrev();
-        Cell nextCell(-1, -1);
+
         // if exit is found
         if ( currentCell.getRow() == info::exportation.y && currentCell.getCol() == info::exportation.x )
         {
-            Serial.println(F("I find the way out!"));
+            Serial.println(F("It finds the way out!"));
+            blinkFiveLeds();
             return;
         }
         else if ( currentCell.getDirection() < 4 ) // not finish seeking in current cell
@@ -294,42 +311,44 @@ void finder()
             // Serial.println(currentCell.getDirection());
             // Serial.println("previous cell:");
             // Serial.println(prevCell.getValue());
-
             // delay(500);
             // // test end
     
             // TODO: this one only compare with the previous cell for performance yet may lead to infinite loop
-            if ( (nextCell.getValue() == ' ' || nextCell.getValue() == '+') && (nextCell.getRow() != prevCell.getRow() || nextCell.getCol() != prevCell.getCol()) )
+            if ( (nextCell.getValue() == ' ' || nextCell.getValue() == '+' || nextCell.getValue() == '*') && 
+                (nextCell.getRow() != prevCell.getRow() || nextCell.getCol() != prevCell.getCol()) )
             {
                 stack.push(nextCell);
                 // TODO: add animation
                 
-                int deltaX = nextCell.getCol() - myFinder.x;
-                int deltaY = nextCell.getRow() - myFinder.y;
+                deltaX = nextCell.getCol() - myFinder.x;
+                deltaY = nextCell.getRow() - myFinder.y;
                 updateCursor( myFinder, deltaX, deltaY);
                 
                 // test
-                Serial.print("* now is [");
+                Serial.print(F("* now is ["));
                 Serial.print(nextCell.getCol() );
-                Serial.print(", ");
+                Serial.print(F(", "));
                 Serial.print(nextCell.getRow() );
-                Serial.println("];");
+                Serial.print(F("]; "));
+                Serial.print(F("value: "));
+                Serial.println(nextCell.getValue());
                 // test end;
-                delay(500);
+                delay(200);
             }
         }
         else
         {
             // test
-            Serial.print("stack size is ");
+            Serial.print(F("stack size is "));
             Serial.println(stack.count());
             // test end
             stack.pop();
             // animation
-            int deltaX = stack.peek().getCol() - myFinder.x;
-            int deltaY = stack.peek().getRow() - myFinder.y;
+            deltaX = stack.peek().getCol() - myFinder.x;
+            deltaY = stack.peek().getRow() - myFinder.y;
             updateCursor( myFinder, deltaX, deltaY);
-            delay(100);
+            delay(200);
             
             
         }
@@ -337,7 +356,23 @@ void finder()
 }
 
 
-
+void blinkFiveLeds()
+{
+    int led[] = {RATING_LED_0, RATING_LED_1, RATING_LED_2, RATING_LED_3, RATING_LED_4};
+    while ( true )
+    {
+        for (int i = 0; i < 5; ++i)
+        {
+            digitalWrite( led[i], HIGH);
+        }
+        delay(100);
+        for (int i = 0; i < 5; ++i)
+        {
+            digitalWrite( led[i], LOW);
+        }
+        delay(100);
+    }
+}
 
 ///////////////////////////////
 //////////TEST FUNCTIONS///////
