@@ -257,7 +257,7 @@ bool isOccupied(const Point &cursor)
 void finder()
 {
 	// NOTE: now it will crash when it uses up memory
-
+    Point myFinder = {info::entrance.x, info::entrance.y};
     StackArray<Cell> stack;
     stack.push(Cell(-1, -1));   // dummy
     stack.push(Cell(info::entrance.y, info::entrance.x));
@@ -265,6 +265,8 @@ void finder()
     while ( true )
     {
         Cell& currentCell = stack.peek();
+        Cell& prevCell = stack.peekPrev();
+        Cell nextCell(-1, -1);
         // if exit is found
         if ( currentCell.getRow() == info::exportation.y && currentCell.getCol() == info::exportation.x )
         {
@@ -282,8 +284,8 @@ void finder()
             // // test end
             
             // get next cell and previous cell
-            Cell nextCell = currentCell.getNextCell();
-            Cell prevCell = stack.peekPrev();
+            nextCell = currentCell.getNextCell();
+            
 
             // // test
             // Serial.println("next cell:");
@@ -301,21 +303,39 @@ void finder()
             {
                 stack.push(nextCell);
                 // TODO: add animation
+                
+                int deltaX = nextCell.getCol() - myFinder.x;
+                int deltaY = nextCell.getRow() - myFinder.y;
+                updateCursor( myFinder, deltaX, deltaY);
+                
                 // test
-                Serial.print("* now is [ ");
-                Serial.print(nextCell.getRow() );
-                Serial.print(", ");
+                Serial.print("* now is [");
                 Serial.print(nextCell.getCol() );
+                Serial.print(", ");
+                Serial.print(nextCell.getRow() );
                 Serial.println("];");
                 // test end;
+                delay(500);
             }
         }
         else
         {
+            // test
+            Serial.print("stack size is ");
+            Serial.println(stack.count());
+            // test end
             stack.pop();
+            // animation
+            int deltaX = stack.peek().getCol() - myFinder.x;
+            int deltaY = stack.peek().getRow() - myFinder.y;
+            updateCursor( myFinder, deltaX, deltaY);
+            delay(100);
+            
+            
         }
     }
 }
+
 
 
 

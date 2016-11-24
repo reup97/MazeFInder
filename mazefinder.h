@@ -72,6 +72,7 @@ bool atBoundaries(const Point &cursor);
 bool isOccupied(const Point &cursor);
 void finder();
 
+
 void test_showMaze();
 
 
