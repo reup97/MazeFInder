@@ -153,7 +153,7 @@ State scanJoystick()
 
 void updateCursor(Point& cursor, int horiz, int vert)
 {
-    //store previous pic
+    //store previous piece
     char prev = maze[cursor.y][cursor.x];
     // pedding
     if ( prev == Road )  // road
@@ -256,35 +256,48 @@ bool isOccupied(const Point &cursor)
 
 void finder()
 {
+	// NOTE: now it will crash when it uses up memory
 
     StackArray<Cell> stack;
-    // TODO: new start is (0,0)
-    stack.push(Cell(0, 0));
+    stack.push(Cell(-1, -1));   // dummy
+    stack.push(Cell(info::entrance.y, info::entrance.x));
 
     while ( true )
     {
-        Cell currentCell = stack.peek();
+        Cell& currentCell = stack.peek();
         // if exit is found
-        if ( currentCell.getRow() == info::exportation.x && currentCell.getCol() == info::exportation.y )
+        if ( currentCell.getRow() == info::exportation.y && currentCell.getCol() == info::exportation.x )
         {
             Serial.println(F("I find the way out!"));
             return;
         }
-        else if ( currentCell.getDirection() <= 4 ) // not finish seeking in current cell
+        else if ( currentCell.getDirection() < 4 ) // not finish seeking in current cell
         {
-            // test
-            Serial.println("im here: -- ");
-            Serial.println(currentCell.getValue());
-            Serial.print("direction:");
-            Serial.println(currentCell.getDirection());
-            // test end
+            // // test
+            // Serial.print("im here: -- ");
+            // Serial.println(currentCell.getValue());
+            // Serial.print("direction: ");
+            // Serial.println(currentCell.getDirection());
+            
+            // // test end
+            
+            // get next cell and previous cell
             Cell nextCell = currentCell.getNextCell();
-            // test
-            Serial.println(nextCell.getValue());
-            Serial.print("direction:");
-            Serial.println(currentCell.getDirection());
-            // test end
-            if ( nextCell.getValue() == ' ') // && nextCell.getRow() != currentCell.getRow() && nextCell.getCol() != currentCell.getCol() ) // TODO: (nextCell.row, nextCell.col) not in [(c.row, c.col) for c in stack]
+            Cell prevCell = stack.peekPrev();
+
+            // // test
+            // Serial.println("next cell:");
+            // Serial.println(nextCell.getValue());
+            // Serial.print("current direction:");
+            // Serial.println(currentCell.getDirection());
+            // Serial.println("previous cell:");
+            // Serial.println(prevCell.getValue());
+
+            // delay(500);
+            // // test end
+    
+            // TODO: this one only compare with the previous cell for performance yet may lead to infinite loop
+            if ( (nextCell.getValue() == ' ' || nextCell.getValue() == '+') && (nextCell.getRow() != prevCell.getRow() || nextCell.getCol() != prevCell.getCol()) )
             {
                 stack.push(nextCell);
                 // TODO: add animation
@@ -303,7 +316,6 @@ void finder()
         }
     }
 }
-
 
 
 

@@ -30,8 +30,8 @@
 // Color definitions
 #define BLACK 0x0000
 #define WHITE 0xFFFF
-#define BLUE 0x001F
-#define RED 0xF800
+#define RED 0x001F
+#define BLUE 0xF800
 #define GREEN 0x07E0
 // #define CYAN 0x07FF
 // #define MAGENTA 0xF81F 
@@ -50,8 +50,8 @@ namespace info
     const int wallWidth = 16;
     const int wallColor = WHITE;
     const int roadColor = BLACK;
-    const int cursorColor = BLUE;
-    const int entranceColor = RED;
+    const int cursorColor = RED;
+    const int entranceColor = BLUE;
     const int exitColor = GREEN;
     extern Point entrance;
     extern Point exportation; 
