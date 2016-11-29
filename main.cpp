@@ -8,7 +8,7 @@
 
 #include "mazefinder.h"
 
-Point info::entrance = { -1,  -1};
+Point info::entrance = {-1,  -1};
 Point info::exportation = {-1, -1}; 
 
 // initialize maze
@@ -79,6 +79,7 @@ int main()
     {
         Serial.println(F("Please select an entrance with joystick."));
         drawMaze(Entrance);
+        Serial
     }
 
     while ( -1 == info::exportation.x)
@@ -93,14 +94,12 @@ int main()
     delay(1000);    // delay for 1 seconds
 
     finder();
-    // TODO: end of game animation
-    // if ( 1 == finderResult )
-    
+
     Serial.end();
     return 0;
 }
 
-
+// complexity: O(n), n is the user input
 void drawMaze(Block block)
 {
     // allows user to draw the maze on the TFT screen and map the corresponding blocks to maze array
@@ -148,7 +147,7 @@ void drawMaze(Block block)
 
 }
 
-
+// complexity: O(1)
 State scanJoystick()
 {
     int vert = analogRead(JOY_VERT_ANALOG);
@@ -179,6 +178,7 @@ State scanJoystick()
     return state;
 }
 
+// complexity: O(1)
 inline void updateCursor(Point& cursor, int horiz, int vert)
 {
     //store previous piece
@@ -229,6 +229,7 @@ inline void updateCursor(Point& cursor, int horiz, int vert)
 
 }
 
+// complexity: O(1)
 void drawmap(const Point &cursor, Block block)
 {
     if ( Wall == block)
@@ -290,21 +291,29 @@ void drawmap(const Point &cursor, Block block)
 
 }
 
+// complexity: O(1)
 inline void mapping(const Point &cursor, char ch)
 {
     maze[cursor.y][cursor.x] = ch;
 }
 
+// complexity: O(1)
 inline bool atBoundaries(const Point &cursor)
 {
     return ( cursor.x == 0 || cursor.x == info::col - 1 || cursor.y == 0 || cursor.y == info::row - 1 );
 }
 
+// complexity: O(1)
 inline bool isOccupied(const Point &cursor)
 {
     return maze[cursor.y][cursor.x] != Road;
 }
 
+// TODO: which is better? 
+// complexity: O(n), n is roughly the complexity of the given maze
+// OR,
+// best case: O(1), worst case: O(1) , average: O(1), since the size of maze is fixed, 
+// the time it takes will not exceeds the worst case as user increase the complexity.
 int finder()
 {
     // one Cell takes 7 bytes and the worse case for the finder to find the way out takes
@@ -410,7 +419,7 @@ int finder()
     }
 }
 
-
+// Complexity: O(1)
 void blinkFiveLeds()
 {
     int led[] = {RATING_LED_0, RATING_LED_1, RATING_LED_2, RATING_LED_3, RATING_LED_4};
@@ -435,6 +444,7 @@ void blinkFiveLeds()
 //////////////////////////////////////////////
 
 // date: Nov 24 2016
+// complexity: O(1)
 void startGame()
 {
     const int showTimeInMillis = 500;
@@ -479,11 +489,12 @@ void startGame()
 }
 
 // date Nov 26 2016
+// complexity: O(1)
 inline int getDistance(const Point &a, const Point &b)
 {
     return abs( a.x - b.x) + abs(a.y - b.y);
 }
-
+// complexity: O(1)
 inline void indicateDistance( const int dist )
 {
 
@@ -503,6 +514,9 @@ inline void indicateDistance( const int dist )
 //////////TEST FUNCTIONS///////
 ///////////////////////////////
 
+// complexity: O(1) since maze size is fixed. 
+// However, if maze size [m, n] are variables,
+// the complexity should be O(mn)
 void test_showMaze()
 {
     Serial.println();
