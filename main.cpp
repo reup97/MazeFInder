@@ -309,8 +309,8 @@ inline bool isOccupied(const Point &cursor)
     return maze[cursor.y][cursor.x] != Road;
 }
 
-// TODO: which is better? 
-// complexity: O(n), n is roughly the complexity of the given maze
+
+// complexity: O(mn), m, n are the size of the maze
 // OR,
 // best case: O(1), worst case: O(1) , average: O(1), since the size of maze is fixed, 
 // the time it takes will not exceeds the worst case as user increase the complexity.
@@ -318,7 +318,7 @@ int finder()
 {
     // one Cell takes 7 bytes and the worse case for the finder to find the way out takes
     //  8 (cols)* 10 (rows) * 7 = 560 bytes of memory, which is much less than the total memory
-    // of Arduino mega 2560. Thus it allows me to implement a stack to store cells the finder have  
+    // of an Arduino mega 2560. Thus it allows me to implement a stack to store cells the finder have  
     // visited and makes the algorithm cleaner
     
     Point myFinder = {info::entrance.x, info::entrance.y};
@@ -443,7 +443,7 @@ void blinkFiveLeds()
 //////////////////////////////////////////////
 
 // date: Nov 24 2016
-// complexity: O(1)
+// complexity: O(1), since delay is fixed
 void startGame()
 {
     const int showTimeInMillis = 500;

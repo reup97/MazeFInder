@@ -29,9 +29,14 @@ private:
 	int direction_;
 	enum { arrRow = 4, arrCol = 2 };
 	enum {totalRow = 10, totalCol = 8};
+	static const int ds[arrRow][arrCol];
 	void setValue(int totalRow, int totalCol);
 };
 
+const int Cell::ds[Cell::arrRow][Cell::arrCol] =  { {1, 0 },
+			    					 {0, 1 },
+			  				   	     {-1, 0},
+			  					     {0, -1} };
 
 Cell::Cell(int initRow, int initCol)
 {
@@ -48,11 +53,6 @@ Cell::~Cell()
 
 Cell Cell::getNextCell()
 {
-	static const int ds[arrRow][arrCol] = { {1, 0 },
-			    					 {0, 1 },
-			  				   	     {-1, 0},
-			  					     {0, -1} };
-
 	++direction_;
 	// return Cell(constrain( row_ + ds[direction_-  1][0], 0, totalRow - 1 ), constrain( col_ + ds[direction_ - 1][1], 0, totalCol - 1) );
 	return Cell( row_ + ds[direction_ -  1][0], col_ + ds[direction_ - 1][1] );
