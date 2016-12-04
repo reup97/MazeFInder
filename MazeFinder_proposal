@@ -1,0 +1,32 @@
+CMPUT 274
+
+Project Title: Maze Finder
+
+Team members: Puer (Paul) Liu and Joanne Lai
+
+Description: 
+Our project is aiming to find a solution to a maze given by the user using one Arduino board.
+It will allow users to draw the map of a maze on the TFT display with the help of a joystick 
+and a pushbutton: use joystick as a cursor to locate the position, and use pushbutton to put 
+down a "block"( a certain aera that acts as the "wall" of the maze) . Also, user need to block 
+the boundaries and tell Arduino which is the entrance and exit.
+
+Milestones:
+1.		Nov. 17
+		UI design
+		Allow user to draw the maze on the screen
+
+2.		Nov. 20
+		Record user drawing into 2-dimentional array
+		Alert user for the boundary incomplection and other exceptions
+
+3.		Nov. 26
+		Implement algorithms that let AI find the exit of the maze
+		Handle occations that some exceptions not filtered out at the drawing level
+
+4.		Nov. 30
+		Enable animation of our maze finder moving in the maze
+
+5. 		Bonus Milestone
+		Add texture to the wall and the floor, make our maze finder a "person" instead of
+		a small rectangle.
