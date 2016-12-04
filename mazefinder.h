@@ -74,8 +74,6 @@ enum Block {Road = ' ',
             Exportation = '+',
             Checked = '~'};
 
-
-
 void drawMaze(Block block);
 State scanJoystick();
 inline void updateCursor(Point& cursor, int horiz, int vert);

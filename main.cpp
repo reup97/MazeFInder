@@ -12,13 +12,13 @@ Point info::entrance = {-1,  -1};
 Point info::exportation = {-1, -1}; 
 
 // initialize maze
-extern char maze[info::row][info::col];
+char maze[info::row][info::col];
 
 
 Adafruit_ST7735 tft = Adafruit_ST7735(TFT_CS, TFT_DC, TFT_RST);
 lcd_image_t wallImage = { "wall.lcd", TFT_WIDTH, TFT_HEIGHT };
 lcd_image_t gndImage = { "gnd.lcd", TFT_WIDTH, TFT_HEIGHT };
-lcd_image_t entranceImage = { "exitsign.lcd", info::wallWidth, info::wallWidth };   // TODO: find a better pic for entrance
+// lcd_image_t entranceImage = { "exitsign.lcd", info::wallWidth, info::wallWidth };   // TODO: find a better pic for entrance
 lcd_image_t exitImage = { "exitsign.lcd", info::wallWidth, info::wallWidth };
 
 void setup() 
@@ -79,7 +79,6 @@ int main()
     {
         Serial.println(F("Please select an entrance with joystick."));
         drawMaze(Entrance);
-        Serial
     }
 
     while ( -1 == info::exportation.x)
@@ -144,7 +143,6 @@ void drawMaze(Block block)
         }
         delay(250);
     }
-
 }
 
 // complexity: O(1)
@@ -204,12 +202,12 @@ inline void updateCursor(Point& cursor, int horiz, int vert)
     }
     else if ( prev == Entrance)   // entrance
     {
-        // tft.fillRect(cursor.x * info::wallWidth, cursor.y * info::wallWidth,
-        //          info::wallWidth, info::wallWidth, info::entranceColor);
-        lcd_image_draw(&entranceImage, &tft,
-                 0, 0,
-                 cursor.x * info::wallWidth, cursor.y * info::wallWidth,
-                 info::wallWidth, info::wallWidth);
+        tft.fillRect(cursor.x * info::wallWidth, cursor.y * info::wallWidth,
+                 info::wallWidth, info::wallWidth, info::entranceColor);
+        // lcd_image_draw(&entranceImage, &tft,
+        //          0, 0,
+        //          cursor.x * info::wallWidth, cursor.y * info::wallWidth,
+        //          info::wallWidth, info::wallWidth);
     }
     else if ( prev == Exportation)   // exportation
     {
@@ -253,10 +251,12 @@ void drawmap(const Point &cursor, Block block)
 
             return;
         }
-        lcd_image_draw(&entranceImage, &tft,
-                 0, 0,
-                 cursor.x * info::wallWidth, cursor.y * info::wallWidth,
-                 info::wallWidth, info::wallWidth);
+        tft.fillRect(cursor.x * info::wallWidth, cursor.y * info::wallWidth,
+                 info::wallWidth, info::wallWidth, info::entranceColor);
+        // lcd_image_draw(&entranceImage, &tft,
+        //          0, 0,
+        //          cursor.x * info::wallWidth, cursor.y * info::wallWidth,
+        //          info::wallWidth, info::wallWidth);
         info::entrance.x = cursor.x;
         info::entrance.y = cursor.y;
         mapping(cursor, Entrance);
@@ -349,7 +349,6 @@ int finder()
             // Serial.println(currentCell.getValue());
             // Serial.print("direction: ");
             // Serial.println(currentCell.getDirection());
-            
             // // test end
             
             // get next cell and previous cell
@@ -404,7 +403,7 @@ int finder()
             updateCursor( myFinder, deltaX, deltaY);
 
             // if stack size is one ( dummy ), it means that the exit is somehow unreachable.
-            // the finder will goes all the way back to the extrance.
+            // the finder will go all the way back to the extrance.
             if ( 1 == stack.count())
             {
                 Serial.println(F("The exit is not reachable, finder goes back to the entrance point."));
