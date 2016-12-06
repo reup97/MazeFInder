@@ -98,11 +98,11 @@ int main()
     return 0;
 }
 
-// complexity: O(n), n is the user input
+// complexity: O(n), space complexity O(1), n is the user input ( the longer the user draws the maze, the 
+// longer this function takes ).
 void drawMaze(Block block)
 {
     // allows user to draw the maze on the TFT screen and map the corresponding blocks to maze array
-    
     static Point cursor = { 0, 0 };
     updateCursor(cursor, 0, 0);
     for (;;)
@@ -145,7 +145,7 @@ void drawMaze(Block block)
     }
 }
 
-// complexity: O(1)
+// O(1) runtime, O(1) space
 State scanJoystick()
 {
     int vert = analogRead(JOY_VERT_ANALOG);
@@ -176,7 +176,10 @@ State scanJoystick()
     return state;
 }
 
-// complexity: O(1)
+// O(1) runtime, O(1) space
+// However, if we take lcd_image_draw() in to account, and assume the block to draw will
+// resize as the maze becomes bigger, the runtime should be O(1/ n^2) n = maze length(width) :
+// the block to draw becomes smaller and hence function take shorter time.
 inline void updateCursor(Point& cursor, int horiz, int vert)
 {
     //store previous piece
@@ -227,7 +230,8 @@ inline void updateCursor(Point& cursor, int horiz, int vert)
 
 }
 
-// complexity: O(1)
+// O(1) runtime, O(1) space,
+// special situations are the same as updateCursor()
 void drawmap(const Point &cursor, Block block)
 {
     if ( Wall == block)
@@ -310,10 +314,12 @@ inline bool isOccupied(const Point &cursor)
 }
 
 
-// complexity: O(mn), m, n are the size of the maze
+// best case: O(1), worse case: O(mn), m, n are the size of the maze if it is resizable.
 // OR,
 // best case: O(1), worst case: O(1) , average: O(1), since the size of maze is fixed, 
 // the time it takes will not exceeds the worst case as user increase the complexity.
+//
+// O(mn) space since we use a stack to store cells.
 int finder()
 {
     // one Cell takes 7 bytes and the worse case for the finder to find the way out takes
@@ -330,20 +336,22 @@ int finder()
     Cell nextCell(-1, -1);
     int deltaX = 0;
     int deltaY = 0;
-    while ( true )
+    for (;;)
     {
         Cell& currentCell = stack.peek();
         // Cell& prevCell = stack.peekPrev();
 
-        // if exit is found
+        // if exit is found, prints words and flash LEDs
         if ( currentCell.getRow() == info::exportation.y && currentCell.getCol() == info::exportation.x )
         {
             Serial.println(F("It finds the way out!"));
             blinkFiveLeds();
             return 1;
         }
-        else if ( currentCell.getDirection() < 4 ) // not finish seeking in current cell
+        else if ( currentCell.getDirection() < 4 )
         {
+            // not finish seeking in current cell, so continue seeking for next direction
+            
             // // test
             // Serial.print("im here: -- ");
             // Serial.println(currentCell.getValue());
@@ -354,7 +362,6 @@ int finder()
             // get next cell and previous cell
             nextCell = currentCell.getNextCell();
             
-
             // // test
             // Serial.println("next cell:");
             // Serial.println(nextCell.getValue());
@@ -365,11 +372,9 @@ int finder()
             // delay(500);
             // // test end
 
-            if ( (nextCell.getValue() == ' ' || nextCell.getValue() == '+' ) ) //  || nextCell.getValue() == '*') )
-                // (nextCell.getRow() != prevCell.getRow() || nextCell.getCol() != prevCell.getCol()) )
+            if ( nextCell.getValue() == Road || nextCell.getValue() == Exportation )
             {
                 stack.push(nextCell);
-                
                 
                 deltaX = nextCell.getCol() - myFinder.x;
                 deltaY = nextCell.getRow() - myFinder.y;
@@ -449,8 +454,7 @@ void startGame()
     const int showTimeInMillis = 500;
     const int blockSize = 3;
     const uint16_t colour[] = {  BLUE, RED, GREEN, CYAN, MAGENTA, YELLOW, WHITE };
-    const int startTime = millis();
-
+    
     tft.setCursor(0, 40);
     tft.setTextColor(WHITE, BLACK);
     tft.setTextSize(3);
@@ -459,14 +463,13 @@ void startGame()
     
     uint16_t currColor = 0;
     Point drawPt = { 0, 0 };
-    
+
+    const int startTime = millis();
     while ( millis() - startTime < showTimeInMillis )
     {
          currColor = colour[ random(7) ];
          drawPt.x = constrain( random(TFT_WIDTH) , 0, TFT_WIDTH - blockSize  );
          drawPt.y = constrain( random(TFT_HEIGHT), 0, TFT_HEIGHT - blockSize );
-         // tft.fillRect(drawPt.x, drawPt.y,
-         //            blockSize, blockSize, currColor);
          tft.fillCircle( drawPt.x, drawPt.y, blockSize, currColor);
     }
     
@@ -476,7 +479,7 @@ void startGame()
     tft.print(F("   By Paul and Joanne"));
     tft.println();
     tft.setCursor(0, 140);
-    tft.setTextColor( WHITE, RED);
+    tft.setTextColor(WHITE, RED);
     tft.println(F("click pushbutton to continue..."));
 
     blinkFiveLeds();    // interally it will enter a loop until user click pushbutton
