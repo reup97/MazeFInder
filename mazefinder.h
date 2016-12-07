@@ -55,7 +55,7 @@ struct Point
 
 namespace info
 {
-    const int col = 8;
+    const int col = 8; 
     const int row = 10;
     const int wallWidth = 16;
     const int wallColor = WHITE;

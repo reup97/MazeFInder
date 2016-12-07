@@ -1,3 +1,4 @@
+// convension of maze signs
 /**
  * entrance:    '*'
  * exportation: '+'
@@ -68,14 +69,13 @@ void setup()
 
 }
 
-
 int main()
 {
     setup();
     // beginning animation
     startGame();
 
-    while (-1 ==info::entrance.x)
+    while ( -1 ==info::entrance.x)
     {
         Serial.println(F("Please select an entrance with joystick."));
         drawMaze(Entrance);
@@ -90,7 +90,7 @@ int main()
     Serial.println(F("You can draw the wall now."));
 	drawMaze(Wall);
     Serial.println(F("Ready to find the way out!"));
-    delay(1000);    // delay for 1 seconds
+    delay(1000);    // delay for 1 second
 
     finder();
 
@@ -318,7 +318,6 @@ inline bool isOccupied(const Point &cursor)
 // OR,
 // best case: O(1), worst case: O(1) , average: O(1), since the size of maze is fixed, 
 // the time it takes will not exceeds the worst case as user increase the complexity.
-//
 // O(mn) space since we use a stack to store cells.
 int finder()
 {
@@ -423,7 +422,8 @@ int finder()
     }
 }
 
-// Complexity: O(1)
+// runtime is determined by user ( it can blink forever if user doesnt press pushbutton)
+// O(1) space
 void blinkFiveLeds()
 {
     int led[] = {RATING_LED_0, RATING_LED_1, RATING_LED_2, RATING_LED_3, RATING_LED_4};
@@ -448,7 +448,8 @@ void blinkFiveLeds()
 //////////////////////////////////////////////
 
 // date: Nov 24 2016
-// complexity: O(1), since delay is fixed
+// O(1) runtime, since delay is fixed
+// O(1) space
 void startGame()
 {
     const int showTimeInMillis = 500;
@@ -491,12 +492,14 @@ void startGame()
 }
 
 // date Nov 26 2016
-// complexity: O(1)
+// O(1) runtime, O(1) space
 inline int getDistance(const Point &a, const Point &b)
 {
     return abs( a.x - b.x) + abs(a.y - b.y);
 }
-// complexity: O(1)
+
+// O(n) runtime, n is the distLevel ranging from 0 to 5.
+// O(1) space
 inline void indicateDistance( const int dist )
 {
 
@@ -519,6 +522,7 @@ inline void indicateDistance( const int dist )
 // complexity: O(1) since maze size is fixed. 
 // However, if maze size [m, n] are variables,
 // the complexity should be O(mn)
+// O(1) space for sure.
 void test_showMaze()
 {
     Serial.println();
@@ -538,7 +542,7 @@ void test_showMaze()
                 Serial.print(char(Exportation));
             else if ( maze[i][j] == Checked)    // checked
                 Serial.print(char(Checked));
-            if (j == info::col - 1 )
+            if ( j == info::col - 1 )
                 Serial.println("|");
         }
     }
