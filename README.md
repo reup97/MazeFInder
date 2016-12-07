@@ -14,13 +14,13 @@ After wiring arduino and download whole folder, simply use `make upload` to uplo
 ## Credits
 All knowledge I learned to solve the problem is from: Depth-first search(wikipedia)https://en.wikipedia.org/wiki/Depth-first_search
 The algorithm is totally developed and implemented by myself.
-## Accessories:
+## Accessories
 * Arduiono Mega Board (AMG)
 * Adafruit LCD display
 * Sparkfun Thumb Joystick
 * LED * 5
-## Wiring instructions:
-Adafruit LCD display:
+## Wiring instructions
+Adafruit LCD display
 * GND to BB GND bus
 * VCC to BB positive bus
 * RESET to Pin 8
@@ -32,7 +32,7 @@ Adafruit LCD display:
 * MISO (Master In Slave Out) to 50
 * LITE (Backlite) to BB positive bus
 
-Sparkfun Thumb Joystick:
+Sparkfun Thumb Joystick
 * VCC to BB positive bus
 * VERT to Pin A0
 * HOR to Pin A1
